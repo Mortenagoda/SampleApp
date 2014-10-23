@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="myApp">
+    <head>
+        <title>Angular bootstrap app</title>
+        <meta charset="UTF-8"/>
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"/>-->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
+        
+        <!-- App custom css -->
+        <link rel="stylesheet" href="css/custom.css"/>
+
+        <!-- Bootstrap Mobile Angular css -->
+        <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-hover.min.css" />
+        <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-base.min.css" />
+        <link rel="stylesheet" href="mobile-angular-ui/dist/css/mobile-angular-ui-desktop.min.css" />
+
+        <!-- Scripts -->
+        <!-- AngularJS 1.2.15 
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-route.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-touch.min.js"></script>
+        --> <!-- AngularJS 1.2.15 -->
+
+        <!-- Angular JS 1.3.0 -->
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-route.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-touch.min.js"></script>
+        <!-- Angular JS 1.3.0 -->
+
+        <!-- Mobile Angular JS -->
+        <script type="text/javascript" src="mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
+        <!-- Mobile Angular JS -->
+
+    </head>
+    <body ng-controller="mainCtrl">
+
+        <div class="sidebar sidebar-left" toggleable parent-active-class="sidebar-left-in" id="mainSidebar">
+            <h1 class="app-name">{{main.appName}}</h1>
+
+            <div class="scrollable">
+                <div class="scrollable-content">
+                    <div class="list-group" toggle="off" bubble target="mainSidebar">                        
+                        <div ng-if="main.loggedIn">
+                            <a class="list-group-item" href="#/">Home <i class="fa fa-chevron-right pull-right"></i></a>
+                            <a class="list-group-item" href="#/shopping">Shopping <i class="fa fa-chevron-right pull-right"></i></a>
+                            <!-- ... -->
+                        </div>
+
+                        <div ng-if="!main.loggedIn">
+                            <div class="list-group-item hand" ng-click="showLogin()" style="cursor: pointer;">Login</div>
+                            <a class="list-group-item" href="#/register">Register <i class="fa fa-chevron-right pull-right"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="app">
+
+            <!-- Navbars -->
+            <div class="navbar navbar-app navbar-absolute-top">
+
+                <div class="navbar-brand navbar-brand-center" yield-to="title">
+                    <span>{{main.appName}}</span>
+                </div>
+
+                <div class="btn-group pull-left">
+                    <div ng-click="toggle('mainSidebar')" class="btn btn-navbar sidebar-toggle">
+                        <i class="fa fa-bars"></i> Menu
+                    </div>
+                </div>
+
+                <div class="btn-group pull-right" yield-to="navbarAction">
+                    <div class="btn btn-navbar">
+                        <i class="fa fa-plus"></i> New
+                    </div>
+                </div>
+            </div>
+
+
+            <div>
+                <div overlay="loginOverlay">
+                    <h4 class="overlay-title">Login</h4>
+                    <p>
+                    <div bs-banel title="Login">
+                        <div ng-show="!main.loggedIn">
+                            <p>Email: <input ng-model="main.credentials.email" type="email"/></p>
+                            <p>Password: <input ng-model="main.credentials.password" type="password"/></p>
+                        </div>
+                    </div>
+                    </p>
+                    <p toggle="off" bubble target="loginOverlay">
+                        <span class="btn btn-primary" ng-click="login()">Ok</span>
+                        <span class="btn btn-default">Cancel</span>
+                    </p>  
+                </div>
+            </div>
+
+            <div class="app-body">
+
+                <ng-view class="app-content scrollable-content"></ng-view>
+            </div>
+
+        </div>
+
+        <div ng-if="!main.credentials.shown">
+            <button ng-click="logout()">Logout</button>
+            <div>{{main.user.firstName}}</div>
+        </div>
+        <!-- Application -->
+        <script type="text/javascript" src="js/App.js"></script>
+        <!-- Application -->
+
+</body>
+</html>
