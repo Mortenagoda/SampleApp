@@ -12,7 +12,7 @@ and open the template in the editor.
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimal-ui" />
         <meta name="apple-mobile-web-app-status-bar-style" content="yes" />
-        
+
         <!-- App custom css -->
         <link rel="stylesheet" href="css/custom.css"/>
 
@@ -57,6 +57,10 @@ and open the template in the editor.
                             <div class="list-group-item hand" ng-click="showLogin()" style="cursor: pointer;">Login</div>
                             <a class="list-group-item" href="#/register">Register <i class="fa fa-chevron-right pull-right"></i></a>
                         </div>
+
+                        <div ng-if="main.loggedIn" class="list-group-item">
+                            <button ng-click="logout()">Logout</button><div>{{main.username}}</div>
+                        </div>
                     </div>
 
                 </div>
@@ -78,11 +82,11 @@ and open the template in the editor.
                     </div>
                 </div>
 
-                <div class="btn-group pull-right" yield-to="navbarAction">
+                <!--<div class="btn-group pull-right" yield-to="navbarAction">
                     <div class="btn btn-navbar">
                         <i class="fa fa-plus"></i> New
                     </div>
-                </div>
+                </div>-->
             </div>
 
 
@@ -92,7 +96,7 @@ and open the template in the editor.
                     <p>
                     <div bs-banel title="Login">
                         <div ng-show="!main.loggedIn">
-                            <p>Email: <input ng-model="main.credentials.email" type="email"/></p>
+                            <p>Email: <input ng-model="main.credentials.username" type="username"/></p>
                             <p>Password: <input ng-model="main.credentials.password" type="password"/></p>
                         </div>
                     </div>
@@ -110,14 +114,9 @@ and open the template in the editor.
             </div>
 
         </div>
-
-        <div ng-if="!main.credentials.shown">
-            <button ng-click="logout()">Logout</button>
-            <div>{{main.user.firstName}}</div>
-        </div>
         <!-- Application -->
         <script type="text/javascript" src="js/App.js"></script>
         <!-- Application -->
 
-</body>
+    </body>
 </html>

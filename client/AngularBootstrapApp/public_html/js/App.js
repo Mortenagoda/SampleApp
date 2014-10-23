@@ -1,60 +1,61 @@
 var app = angular.module("myApp", ["ngRoute", "ngTouch", "mobile-angular-ui"]);
 
 app.config(function($routeProvider) {
-            $routeProvider.when("/", {
-                templateUrl: 'partials/main.html',
-                controller: 'mainCtrl'
-            }).when("/shopping", {
-                templateUrl: 'partials/shopping.html',
-                controller: "shoppingCtrl"
-            }).when("/register", {
-                templateUrl: "partials/register.html",
-                controller: "registerCtrl"
-            });
-        });
+    $routeProvider.when("/", {
+        templateUrl: 'partials/main.html',
+        controller: 'mainCtrl'
+    }).when("/shopping", {
+        templateUrl: 'partials/shopping.html',
+        controller: "shoppingCtrl"
+    }).when("/register", {
+        templateUrl: "partials/register.html",
+        controller: "registerCtrl"
+    });
+});
 
-var authService = app.factory("authService", ["$http", function ($http) {
+app.run(function($http) {
+    $http.get("http://localhost:8080/rest/api/apikeys").success(function (data, status) {
+        $http.defaults.headers.common.ApiKey = data.apiKey;
+    });
+});
+
+var authService = app.factory("authService", ["$http", function($http) {      
         return {
-            login: function (emailPassword) {
+            login: function(emailPassword) {
                 return $http.post("http://localhost:8080/rest/auth/login", emailPassword);
+            },
+            create: function(username, password) {
+                return $http.post("http://localhost:8080/rest/auth/credentials", {username: username, password: password});
             }
         };
     }
 ]);
-var registerService = app.factory("registerService", ["$http", function ($http) {
-        return {
-            login: function (emailPassword) {
-                return $http.post("http://localhost:8080/rest/auth/login", emailPassword);
-            }
-        };
-    }
-]);
 
-app.controller("mainCtrl", ["$scope", "authService", function ($scope, authService) {
+app.controller("mainCtrl", ["$scope", "authService", function($scope, authService) {
         $scope.main = {
             appName: "SampleApp",
-            user: {},
-            credentials: {email: "admin@domain.com", password: "password"},
+            username: "",
+            credentials: {username: "mortena", password: "password"},
             loggedIn: false
         };
-        
+
         $scope.showLogin = function() {
             $scope.toggle('loginOverlay', 'on');
         };
 
-        $scope.login = function () {
-            authService.login({email: $scope.main.credentials.email, password: $scope.main.credentials.password})
-                    .success(function (data, status) {
-                        $scope.main.user = data.person;
-                        $scope.main.credentials.email = "admin@domain.com";
-                        // $scope.main.credentials.password = "";
+        $scope.login = function() {
+            authService.login({username: $scope.main.credentials.username, password: $scope.main.credentials.password})
+                    .success(function(data, status) {
+                        $scope.main.username = data.username;
+                        $scope.main.credentials.username = "mortena";
+                        $scope.main.credentials.password = "password";
                         $scope.main.loggedIn = true;
                     }).error(function(data, status) {
-                        $scope.main.user = {};
-                        $scope.main.loggedIn = false;
-                    });
+                $scope.main.user = {};
+                $scope.main.loggedIn = false;
+            });
         };
-        
+
         $scope.logout = function() {
             $scope.main.credentials.email = "admin@domain.com";
             $scope.main.credentials.password = "";
@@ -63,21 +64,34 @@ app.controller("mainCtrl", ["$scope", "authService", function ($scope, authServi
         };
     }]);
 
-app.controller("shoppingCtrl", ["$scope", function ($scope) {
+app.controller("shoppingCtrl", ["$scope", function($scope) {
         $scope.shopping = {
             label: "We are shopping"
         };
-}]);
+    }]);
 
-app.controller("registerCtrl", ["$scope", "registerService", function($scope, registerService) {
+app.controller("registerCtrl", ["$scope", "authService", function($scope, authService) {
         $scope.newUser = {
-            email: "",
+            username: "",
             password: "",
-            password2: ""
+            password2: "",
+            errorTxt: "",
+            msgTxt: ""
         };
-        
+
         $scope.registerUser = function() {
-            Console.log("Register clicked.");
+            authService.create($scope.newUser.username, $scope.newUser.password)
+                    .success(
+                            function(newUserData, status) {
+                                $scope.newUser = {};
+                                
+                            }
+                    )
+                    .error(
+                            function(data, status) {
+                                $scope.newUser.errorTxt = "Unable to create user!";
+                            }
+                    );
         };
-        
-}]);
+
+    }]);

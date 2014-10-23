@@ -2,7 +2,7 @@ package dk.vandborgandersen.restapi.restservices;
 
 import dk.vandborgandersen.restapi.backendservices.AuthService;
 import dk.vandborgandersen.restapi.backendservices.PersonService;
-import dk.vandborgandersen.restapi.domain.EmailPassword;
+import dk.vandborgandersen.restapi.domain.Credentials;
 import dk.vandborgandersen.restapi.domain.LoginResponse;
 import dk.vandborgandersen.restapi.domain.Person;
 import dk.vandborgandersen.restapi.environment.DBFactory;
@@ -13,8 +13,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.handler.MessageContext;
 
 /**
  * @author Morten Andersen (mortena@gmail.com)
@@ -34,29 +36,38 @@ public class AuthRestService {
     @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response loginSample() {
-        EmailPassword emailPassword = new EmailPassword();
-        emailPassword.setEmail("admin@domain.com");
-        emailPassword.setPassword("password");
-        return Response.status(HttpStatus.SC_OK).entity(emailPassword).build();
+        Credentials credentials = new Credentials();
+        credentials.setUsername("admin@domain.com");
+        credentials.setPassword("password");
+        return Response.status(HttpStatus.SC_OK).entity(credentials).build();
     }
 
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(EmailPassword emailPassword) {
-        if (getAuthService().validateEmailPassword(emailPassword.getEmail(), emailPassword.getPassword())) {
-            Person personByEmail = getPersonService().findPersonByEmail(emailPassword.getEmail());
+    public Response login(Credentials credentials) {
+        Credentials credsFound = getAuthService().validateCredentials(credentials);
+        if (credsFound != null) {
             LoginResponse entity = new LoginResponse();
             entity.setAuthenticationOk(true);
-            entity.setPerson(personByEmail);
-            entity.setMessage("Email and password correct.");
+            entity.setUsername(credsFound.getUsername());
+            entity.setMessage("Username and password correct.");
             return Response.status(HttpStatus.SC_OK).entity(entity).build();
         }
         LoginResponse entity = new LoginResponse();
         entity.setAuthenticationOk(false);
         entity.setMessage("Email and password was not valid.");
         return Response.status(HttpStatus.SC_UNAUTHORIZED).entity(entity).build();
+    }
+
+    @POST
+    @Path("/credentials")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createUser(Credentials credentials) {
+        credentials = getAuthService().createCredentials(credentials.getUsername(), credentials.getPassword());
+        return Response.status(HttpStatus.SC_OK).entity(credentials).build();
     }
 
     private AuthService getAuthService() {

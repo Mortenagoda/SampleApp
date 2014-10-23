@@ -6,7 +6,7 @@ package dk.vandborgandersen.restapi.domain;
 public class LoginResponse {
     private boolean authenticationOk;
     private String message;
-    private Person person;
+    private String username;
 
     public boolean isAuthenticationOk() {
         return authenticationOk;
@@ -24,11 +24,11 @@ public class LoginResponse {
         this.message = message;
     }
 
-    public Person getPerson() {
-        return person;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

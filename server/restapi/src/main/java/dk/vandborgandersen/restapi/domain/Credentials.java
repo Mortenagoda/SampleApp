@@ -3,16 +3,16 @@ package dk.vandborgandersen.restapi.domain;
 /**
  * @author Morten Andersen (mortena@gmail.com)
  */
-public class EmailPassword {
-    private String email;
+public class Credentials {
+    private String username;
     private String password;
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

@@ -9,7 +9,7 @@ import javax.sql.DataSource;
  */
 public class DBFactory {
 
-    public static final String JDBC_MYSQL_LOCALHOST_API = "jdbc:postgresql://localhost/api";
+    public static final String JDBC_MYSQL_LOCALHOST_API = "jdbc:postgresql://192.168.0.16/api";
     public static final String DRIVER_CLASS = "org.postgresql.Driver";
 
     private static DataSource dataSource;
